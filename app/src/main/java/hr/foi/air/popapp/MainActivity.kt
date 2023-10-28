@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import hr.foi.air.popapp.ui.components.PasswordTextField
+import hr.foi.air.popapp.ui.components.StyledButton
+import hr.foi.air.popapp.ui.components.StyledTextField
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,79 +58,36 @@ fun RegistrationPage() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Text(
             text = "Create an Account",
-            style = MaterialTheme.typography.h4
+            style = MaterialTheme.typography.h4,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
 
+        StyledTextField(label = "First name", value = firstName, onValueChange = { firstName = it })
 
-        OutlinedTextField(
-            label = { Text("First name") },
-            value = firstName,
-            onValueChange = { firstName = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
+        StyledTextField(label = "Last name", value = lastName, onValueChange = { lastName = it })
 
+        StyledTextField(label = "Username", value = username, onValueChange = { username = it })
 
-        OutlinedTextField(
-            label = { Text("Last name") },
-            value = lastName,
-            onValueChange = { lastName = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
+        StyledTextField(label = "Email", value = email, onValueChange = { email = it })
 
+        PasswordTextField(label = "Password", value = password, onValueChange = { password = it })
 
-        OutlinedTextField(
-            label = { Text("Username") },
-            value = username,
-            onValueChange = { username = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
-
-
-        OutlinedTextField(
-            label = { Text("Email") },
-            value = email,
-            onValueChange = { email = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
-
-
-        OutlinedTextField(
-            label = { Text("Password") },
-            value = password,
-            onValueChange = { password = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-
-        OutlinedTextField(
-            label = { Text("Confirm password") },
+        PasswordTextField(
+            label = "Confirm password",
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            visualTransformation = PasswordVisualTransformation()
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
         )
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Button(onClick = {}) {
-            Text("Register")
-        }
+        StyledButton(
+            label = "Register",
+            onClick = {}
+        )
     }
 }
