@@ -2,7 +2,8 @@ package hr.foi.air.popapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val primary = Color(255, 0, 106, 141)
+val foiPrimary = Color(206, 0, 61, 255)
+val accentDark = Color(255, 87, 34, 255)
+val accentLight = Color(255, 193, 7, 255)
+val aseColor = Color(0xFF501537)
