@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import hr.foi.air.popapp.navigation.components.EntryPage
+import hr.foi.air.popapp.navigation.components.LoginPage
+import hr.foi.air.popapp.navigation.components.RegistrationPage
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,6 +26,12 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, startDestination = "entry") {
                         composable("entry") {
                             EntryPage()
+                        }
+                        composable("register") {
+                            RegistrationPage()
+                        }
+                        composable("login") {
+                            LoginPage()
                         }
                     }
                 }
