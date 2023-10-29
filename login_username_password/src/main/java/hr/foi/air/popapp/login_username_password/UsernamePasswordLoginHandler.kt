@@ -9,5 +9,18 @@ class UsernamePasswordLoginHandler : LoginHandler {
         loginToken: LoginToken,
         loginListener: LoginOutcomeListener
     ) {
+        if (loginToken !is UsernamePasswordLoginToken) {
+            throw IllegalArgumentException("Must receive UsernamePasswordLoginToken instance for 'loginToken'!")
+        }
+
+        val authorizers = loginToken.getAuthorizers()
+        val username = authorizers["username"]
+        val password = authorizers["password"]
+
+        if (username == "ihorvat" && password == "test123") {
+            loginListener.onSuccessfulLogin("ihorvat")
+        } else {
+            loginListener.onFailedLogin("Wrong mock credentials entered. The correct combination is 'ihorvat'-'test123'!")
+        }
     }
 }
