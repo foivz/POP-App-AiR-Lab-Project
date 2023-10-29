@@ -10,13 +10,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hr.foi.air.popapp.core.login.LoginHandler
+import hr.foi.air.popapp.core.login.LoginOutcomeListener
+import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
+import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginToken
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
 
 @Composable
 fun LoginPage(
-    onSuccessfulLogin: () -> Unit
+    onSuccessfulLogin: () -> Unit,
+    loginHandler: LoginHandler
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -61,11 +66,17 @@ fun LoginPage(
         StyledButton(
             label = "Login",
             onClick = {
-                if (username == "ihorvat" && password == "test123") {
-                    onSuccessfulLogin()
-                } else {
-                    errorMessage = "Wrong mock credentials entered. The correct combination is 'ihorvat'-'test123'!"
-                }
+                val usernamePasswordToken = UsernamePasswordLoginToken(username, password)
+
+                loginHandler.handleLogin(usernamePasswordToken, object : LoginOutcomeListener {
+                    override fun onSuccessfulLogin(username: String) {
+                        onSuccessfulLogin()
+                    }
+
+                    override fun onFailedLogin(reason: String) {
+                        errorMessage = reason
+                    }
+                })
             }
         )
     }
@@ -74,5 +85,5 @@ fun LoginPage(
 @Preview
 @Composable
 fun LoginPagePreview() {
-    LoginPage({})
+    LoginPage({}, UsernamePasswordLoginHandler())
 }
