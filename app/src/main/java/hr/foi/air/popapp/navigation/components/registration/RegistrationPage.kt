@@ -1,4 +1,4 @@
-package hr.foi.air.popapp.navigation.components
+package hr.foi.air.popapp.navigation.components.registration
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,7 +23,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun RegistrationPage() {
+fun RegistrationPage(
+    onSuccessfulRegistration: (newUsername: String) -> Unit
+) {
     var firstName by remember {
         mutableStateOf("")
     }
@@ -101,7 +103,7 @@ fun RegistrationPage() {
                 serviceCall.enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                         if (response?.body()?.success == true) {
-                            // TODO: Handle successful registration
+                            onSuccessfulRegistration(username)
                         } else {
                             errorMessage = "Something went wrong! Check entered data!"
                         }
@@ -121,5 +123,5 @@ fun RegistrationPage() {
 @Preview
 @Composable
 fun RegistrationPagePreview() {
-    RegistrationPage()
+    RegistrationPage({})
 }
