@@ -25,7 +25,14 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, startDestination = "entry") {
                         composable("entry") {
-                            EntryPage()
+                            EntryPage(
+                                onLoginButtonClick = {
+                                    navController.navigate("login")
+                                },
+                                onRegistrationButtonClick = {
+                                    navController.navigate("register")
+                                }
+                            )
                         }
                         composable("register") {
                             RegistrationPage()
