@@ -50,6 +50,7 @@ dependencies {
     def nav_version = "2.7.4"
 
     implementation project(":core")
+    implementation project(":login_username_password")
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
