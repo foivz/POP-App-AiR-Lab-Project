@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
@@ -72,4 +73,10 @@ fun RegistrationPage() {
             onClick = {}
         )
     }
+}
+
+@Preview
+@Composable
+fun RegistrationPagePreview() {
+    RegistrationPage()
 }
