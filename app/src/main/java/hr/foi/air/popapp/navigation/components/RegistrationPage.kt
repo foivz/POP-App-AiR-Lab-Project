@@ -8,13 +8,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hr.foi.air.popapp.network.NetworkService
+import hr.foi.air.popapp.network.models.RegistrationBody
+import hr.foi.air.popapp.network.models.ResponseBody
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun RegistrationPage() {
@@ -36,6 +42,12 @@ fun RegistrationPage() {
     var confirmPassword by remember {
         mutableStateOf("")
     }
+    var isAwaitingResponse by remember {
+        mutableStateOf(false)
+    }
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
 
     Column(
         modifier = Modifier
@@ -48,6 +60,13 @@ fun RegistrationPage() {
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(vertical = 16.dp)
         )
+
+        if (errorMessage != "") {
+            Text(
+                text = errorMessage,
+                color = Color.Red
+            )
+        }
 
         StyledTextField(label = "First name", value = firstName, onValueChange = { firstName = it })
 
@@ -70,7 +89,31 @@ fun RegistrationPage() {
 
         StyledButton(
             label = "Register",
-            onClick = {}
+            enabled = !isAwaitingResponse,
+            onClick = {
+                val requestBody = RegistrationBody(firstName, lastName, username, email, password, "buyer")
+
+                val service = NetworkService.authService
+                val serviceCall = service.registerUser(requestBody)
+
+                isAwaitingResponse = true
+
+                serviceCall.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+                        if (response?.body()?.success == true) {
+                            // TODO: Handle successful registration
+                        } else {
+                            errorMessage = "Something went wrong! Check entered data!"
+                        }
+                        isAwaitingResponse = false
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+                        errorMessage = "Couldn't contact the server..."
+                        isAwaitingResponse = false
+                    }
+                })
+            }
         )
     }
 }
