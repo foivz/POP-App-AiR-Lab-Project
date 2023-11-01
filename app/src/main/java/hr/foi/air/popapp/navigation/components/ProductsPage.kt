@@ -1,4 +1,4 @@
-package hr.foi.air.popapp.navigation.components.registration
+package hr.foi.air.popapp.navigation.components
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn

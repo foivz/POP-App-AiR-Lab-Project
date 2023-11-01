@@ -17,8 +17,8 @@ import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.popapp.navigation.components.EntryPage
 import hr.foi.air.popapp.navigation.components.HomePage
 import hr.foi.air.popapp.navigation.components.LoginPage
+import hr.foi.air.popapp.navigation.components.ProductsPage
 import hr.foi.air.popapp.navigation.components.registration.PostRegistrationNotice
-import hr.foi.air.popapp.navigation.components.registration.ProductsPage
 import hr.foi.air.popapp.navigation.components.registration.RegistrationPage
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 
