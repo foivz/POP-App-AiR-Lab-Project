@@ -7,13 +7,14 @@ import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
 import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
 import hr.foi.air.popapp.ws.models.LoggedInUserData
 import hr.foi.air.popapp.ws.models.LoginBody
+import hr.foi.air.popapp.ws.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginRequestHandler(private val requestBody: LoginBody) : RequestHandler {
     override fun sendRequest(responseListener: ResponseListener) {
-        val service = hr.foi.air.popapp.ws.network.NetworkService.authService
+        val service = NetworkService.authService
         val serviceCall = service.loginUser(requestBody)
 
         serviceCall.enqueue(object : Callback<SuccessfulResponseBody<LoggedInUserData>> {
