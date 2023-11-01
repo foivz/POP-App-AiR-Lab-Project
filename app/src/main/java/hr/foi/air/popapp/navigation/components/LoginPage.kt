@@ -25,8 +25,8 @@ fun LoginPage(
     onSuccessfulLogin: () -> Unit,
     loginHandler: LoginHandler
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("sbarry") }
+    var password by remember { mutableStateOf("test123") }
 
     var awaitingResponse by remember { mutableStateOf(false) }
     var errorMessage by remember {

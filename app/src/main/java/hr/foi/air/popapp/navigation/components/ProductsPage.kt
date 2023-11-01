@@ -4,47 +4,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import hr.foi.air.popapp.context.Auth
-import hr.foi.air.popapp.core.login.network.ResponseListener
-import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
-import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
+import androidx.lifecycle.viewmodel.compose.viewModel
+import hr.foi.air.popapp.ui.components.ProductCard
+import hr.foi.air.popapp.viewmodels.ProductsViewModel
 import hr.foi.air.popapp.ws.models.responses.Product
-import hr.foi.air.popapp.ws.request_handlers.ProductsRequestHandler
 
 @Composable
-fun ProductsPage() {
-    val (products, setProducts) = remember { mutableStateOf<MutableList<Product>>(mutableListOf()) }
+fun ProductsPage(viewModel: ProductsViewModel = viewModel()) {
 
-    val productsRequestHandler = ProductsRequestHandler(Auth.loggedInUserData!!.jwt)
+    val products by viewModel.products.observeAsState()
 
-    productsRequestHandler.sendRequest(object : ResponseListener {
-        override fun <T> onSuccessfulResponse(response: SuccessfulResponseBody<T>) {
-            println(response)
-            val productsArray = response.data[0]
-            setProducts((productsArray as Array<Product>).toMutableList())
-        }
-
-        override fun onErrorResponse(response: ErrorResponseBody) {
-            println(response)
-        }
-
-        override fun onNetworkFailure(t: Throwable) {
-            println("Error contacting network...")
-        }
-    })
-
-    if (products.isEmpty()) {
+    if (products?.isEmpty() == true) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize()
         )
     } else {
         LazyColumn {
-            items(products) {
+            items(products as List<Product>) {
                 ProductCard(product = it)
             }
         }
