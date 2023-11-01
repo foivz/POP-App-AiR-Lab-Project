@@ -10,6 +10,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.core.login.LoginHandler
 import hr.foi.air.popapp.core.login.LoginOutcomeListener
 import hr.foi.air.popapp.core.login.LoginUserData
@@ -76,6 +77,7 @@ fun LoginPage(
                 loginHandler.handleLogin(usernamePasswordToken, object : LoginOutcomeListener {
                     override fun onSuccessfulLogin(loginUserData: LoginUserData) {
                         awaitingResponse = false
+                        Auth.loggedInUserData = loginUserData
                         onSuccessfulLogin()
                     }
 
