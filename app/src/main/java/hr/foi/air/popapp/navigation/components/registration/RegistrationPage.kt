@@ -113,7 +113,18 @@ fun RegistrationPage(
                     override fun onErrorResponse(response: ErrorResponseBody) {
                         isAwaitingResponse = false
 
-                        errorMessage = response.message
+                        errorMessage = response.message + " "
+                        errorMessage += when (response.error_code) {
+                            101 -> "Check username."
+                            102 -> "Username is already used. Please enter another one."
+                            103 -> "Email is invalid."
+                            104 -> "Email entered is already used. Do you already have an account?"
+                            105 -> "Password is invalid. Make sure it has at least 7 characters with at least 1 number."
+                            106 -> "Selected role is invalid!"
+                            107 -> "First name is invalid!"
+                            108 -> "Last name is invalid!"
+                            else -> ""
+                        }
                     }
 
                     override fun onNetworkFailure(t: Throwable) {
