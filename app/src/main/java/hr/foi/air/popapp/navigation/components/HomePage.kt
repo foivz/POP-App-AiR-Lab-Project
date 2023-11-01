@@ -16,9 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
+import java.util.*
 
 @Composable
-fun HomePage() {
+fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
     val menuItems = listOf(
         "Products" to Icons.Default.ShoppingCart,
         "Balance" to Icons.Default.Star,
@@ -32,7 +33,7 @@ fun HomePage() {
             .padding(20.dp)
     ) {
         items(menuItems) { (text, icon) ->
-            MenuItem(text, icon, {})
+            MenuItem(text, icon) { onMenuOptionSelected(text.lowercase(Locale.getDefault())) }
         }
     }
 }
@@ -41,6 +42,6 @@ fun HomePage() {
 @Composable
 fun HomePagePreview() {
     POPAppTheme {
-        HomePage()
+        HomePage({})
     }
 }

@@ -1,6 +1,7 @@
 package hr.foi.air.popapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +15,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.popapp.navigation.components.EntryPage
+import hr.foi.air.popapp.navigation.components.HomePage
 import hr.foi.air.popapp.navigation.components.LoginPage
 import hr.foi.air.popapp.navigation.components.registration.PostRegistrationNotice
+import hr.foi.air.popapp.navigation.components.registration.ProductsPage
 import hr.foi.air.popapp.navigation.components.registration.RegistrationPage
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 
@@ -63,10 +66,25 @@ class MainActivity : ComponentActivity() {
                         composable("login") {
                             LoginPage(
                                 onSuccessfulLogin = {
-                                    navController.navigate("entry")
+                                    navController.navigate("home")
                                 },
                                 loginHandler = currentLoginHandler
                             )
+                        }
+                        composable("home") {
+                            HomePage(onMenuOptionSelected = { selectedRoute ->
+                                when (selectedRoute) {
+                                    "products" -> navController.navigate("products")
+                                    else -> Toast.makeText(
+                                        applicationContext,
+                                        "Not implemented yet",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            })
+                        }
+                        composable("products") {
+                            ProductsPage()
                         }
                     }
                 }
