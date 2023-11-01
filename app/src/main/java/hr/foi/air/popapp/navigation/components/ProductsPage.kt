@@ -45,7 +45,7 @@ fun ProductsPage() {
     } else {
         LazyColumn {
             items(products) {
-                Text(it.name ?: "?")
+                ProductCard(product = it)
             }
         }
     }
