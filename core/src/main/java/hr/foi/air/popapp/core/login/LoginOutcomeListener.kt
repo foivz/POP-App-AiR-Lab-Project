@@ -1,6 +1,6 @@
 package hr.foi.air.popapp.core.login
 
 interface LoginOutcomeListener {
-    fun onSuccessfulLogin(username: String)
+    fun onSuccessfulLogin(loginUserData: LoginUserData)
     fun onFailedLogin(reason: String)
 }
