@@ -12,15 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hr.foi.air.popapp.network.NetworkService
-import hr.foi.air.popapp.network.models.RegistrationBody
-import hr.foi.air.popapp.network.models.ResponseBody
+import hr.foi.air.popapp.core.login.network.ResponseListener
+import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
+import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import hr.foi.air.popapp.ws.models.RegistrationBody
+import hr.foi.air.popapp.ws.request_handlers.RegistrationRequestHandler
 
 @Composable
 fun RegistrationPage(
@@ -93,26 +92,33 @@ fun RegistrationPage(
             label = "Register",
             enabled = !isAwaitingResponse,
             onClick = {
-                val requestBody = RegistrationBody(firstName, lastName, username, email, password, "buyer")
+                val requestBody = RegistrationBody(
+                    firstName,
+                    lastName,
+                    username,
+                    email,
+                    password,
+                    "buyer"
+                )
 
-                val service = NetworkService.authService
-                val serviceCall = service.registerUser(requestBody)
-
+                val registrationRequestHandler = RegistrationRequestHandler(requestBody)
                 isAwaitingResponse = true
 
-                serviceCall.enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-                        if (response?.body()?.success == true) {
-                            onSuccessfulRegistration(username)
-                        } else {
-                            errorMessage = "Something went wrong! Check entered data!"
-                        }
+                registrationRequestHandler.sendRequest(object : ResponseListener {
+                    override fun <T> onSuccessfulResponse(response: SuccessfulResponseBody<T>) {
                         isAwaitingResponse = false
+                        onSuccessfulRegistration(username)
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-                        errorMessage = "Couldn't contact the server..."
+                    override fun onErrorResponse(response: ErrorResponseBody) {
                         isAwaitingResponse = false
+
+                        errorMessage = response.message
+                    }
+
+                    override fun onNetworkFailure(t: Throwable) {
+                        isAwaitingResponse = false
+                        errorMessage = "Network error occured, please try again later..."
                     }
                 })
             }

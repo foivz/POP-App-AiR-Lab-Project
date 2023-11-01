@@ -1,4 +1,4 @@
-package hr.foi.air.popapp
+package hr.foi.air.popapp.ws
 
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient

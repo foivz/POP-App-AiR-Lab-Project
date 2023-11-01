@@ -50,6 +50,7 @@ dependencies {
     def nav_version = "2.7.4"
 
     implementation project(":core")
+    implementation project(":ws")
     implementation project(":login_username_password")
 
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -65,9 +66,5 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation "com.google.code.gson:gson:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.2.0"
-    implementation "com.squareup.retrofit2:retrofit:2.2.0"
     implementation "androidx.navigation:navigation-compose:$nav_version"
 }

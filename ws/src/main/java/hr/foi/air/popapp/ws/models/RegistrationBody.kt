@@ -1,4 +1,4 @@
-package hr.foi.air.popapp.network.models
+package hr.foi.air.popapp.ws.models
 
 data class RegistrationBody(
     val first_name: String,
