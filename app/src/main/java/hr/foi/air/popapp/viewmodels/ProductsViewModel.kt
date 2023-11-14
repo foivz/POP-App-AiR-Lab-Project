@@ -15,7 +15,7 @@ class ProductsViewModel : ViewModel() {
     private val _products: MutableLiveData<List<Product>> = MutableLiveData(mutableListOf())
     val products: LiveData<List<Product>> = _products
 
-    init {
+    fun fetchProducts() {
         val productsRequestHandler = ProductsRequestHandler(Auth.loggedInUserData!!.jwt)
 
         productsRequestHandler.sendRequest(object : ResponseListener<Product> {

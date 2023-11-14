@@ -17,6 +17,7 @@ import hr.foi.air.popapp.ws.models.responses.Product
 fun ProductsPage(viewModel: ProductsViewModel = viewModel()) {
 
     val products by viewModel.products.observeAsState()
+    viewModel.fetchProducts()
 
     if (products?.isEmpty() == true) {
         CircularProgressIndicator(
