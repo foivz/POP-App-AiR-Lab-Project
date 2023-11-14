@@ -7,47 +7,31 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hr.foi.air.popapp.core.login.network.ResponseListener
-import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
-import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
+import androidx.lifecycle.viewmodel.compose.viewModel
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
-import hr.foi.air.popapp.ws.models.RegistrationBody
-import hr.foi.air.popapp.ws.request_handlers.RegistrationRequestHandler
+import hr.foi.air.popapp.viewmodels.RegistrationViewModel
 
 @Composable
 fun RegistrationPage(
+    viewModel: RegistrationViewModel = viewModel(),
     onSuccessfulRegistration: (newUsername: String) -> Unit
 ) {
-    var firstName by remember {
-        mutableStateOf("")
-    }
-    var lastName by remember {
-        mutableStateOf("")
-    }
-    var username by remember {
-        mutableStateOf("")
-    }
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
+    val firstName = viewModel.firstName.observeAsState().value!!
+    val lastName = viewModel.lastName.observeAsState().value!!
+    val username = viewModel.username.observeAsState().value!!
+    val email = viewModel.email.observeAsState().value!!
+    val password = viewModel.password.observeAsState().value!!
+    val confirmPassword = viewModel.confirmPassword.observeAsState().value!!
     var isAwaitingResponse by remember {
         mutableStateOf(false)
-    }
-    var errorMessage by remember {
-        mutableStateOf("")
     }
 
     Column(
@@ -62,27 +46,42 @@ fun RegistrationPage(
             modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        if (errorMessage != "") {
+        if (viewModel.errorMessage.value!!.isNotBlank()) {
             Text(
-                text = errorMessage,
+                text = viewModel.errorMessage.value!!,
                 color = Color.Red
             )
         }
 
-        StyledTextField(label = "First name", value = firstName, onValueChange = { firstName = it })
+        StyledTextField(
+            label = "First name",
+            value = firstName,
+            onValueChange = { viewModel.firstName.value = it })
 
-        StyledTextField(label = "Last name", value = lastName, onValueChange = { lastName = it })
+        StyledTextField(
+            label = "Last name",
+            value = lastName,
+            onValueChange = { viewModel.lastName.value = it })
 
-        StyledTextField(label = "Username", value = username, onValueChange = { username = it })
+        StyledTextField(
+            label = "Username",
+            value = username,
+            onValueChange = { viewModel.username.value = it })
 
-        StyledTextField(label = "Email", value = email, onValueChange = { email = it })
+        StyledTextField(
+            label = "Email",
+            value = email,
+            onValueChange = { viewModel.email.value = it })
 
-        PasswordTextField(label = "Password", value = password, onValueChange = { password = it })
+        PasswordTextField(
+            label = "Password",
+            value = password,
+            onValueChange = { viewModel.password.value = it })
 
         PasswordTextField(
             label = "Confirm password",
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = { viewModel.confirmPassword.value = it },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
         )
 
@@ -92,46 +91,17 @@ fun RegistrationPage(
             label = "Register",
             enabled = !isAwaitingResponse,
             onClick = {
-                val requestBody = RegistrationBody(
-                    firstName,
-                    lastName,
-                    username,
-                    email,
-                    password,
-                    "buyer"
-                )
-
-                val registrationRequestHandler = RegistrationRequestHandler(requestBody)
                 isAwaitingResponse = true
 
-                registrationRequestHandler.sendRequest(object : ResponseListener {
-                    override fun <T> onSuccessfulResponse(response: SuccessfulResponseBody<T>) {
+                viewModel.registerUser(
+                    onSuccess = {
                         isAwaitingResponse = false
                         onSuccessfulRegistration(username)
-                    }
-
-                    override fun onErrorResponse(response: ErrorResponseBody) {
+                    },
+                    onFail = {
                         isAwaitingResponse = false
-
-                        errorMessage = response.message + " "
-                        errorMessage += when (response.error_code) {
-                            101 -> "Check username."
-                            102 -> "Username is already used. Please enter another one."
-                            103 -> "Email is invalid."
-                            104 -> "Email entered is already used. Do you already have an account?"
-                            105 -> "Password is invalid. Make sure it has at least 7 characters with at least 1 number."
-                            106 -> "Selected role is invalid!"
-                            107 -> "First name is invalid!"
-                            108 -> "Last name is invalid!"
-                            else -> ""
-                        }
                     }
-
-                    override fun onNetworkFailure(t: Throwable) {
-                        isAwaitingResponse = false
-                        errorMessage = "Network error occured, please try again later..."
-                    }
-                })
+                )
             }
         )
     }
@@ -140,5 +110,5 @@ fun RegistrationPage(
 @Preview
 @Composable
 fun RegistrationPagePreview() {
-    RegistrationPage({})
+    RegistrationPage(onSuccessfulRegistration = {})
 }
