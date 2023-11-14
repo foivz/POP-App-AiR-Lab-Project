@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.popapp.navigation.components.EntryPage
 import hr.foi.air.popapp.navigation.components.HomePage
@@ -31,7 +32,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             POPAppTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
                     val navController = rememberNavController()
 
                     NavHost(navController, startDestination = "entry") {
@@ -54,10 +58,13 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             "register/{username}/notice",
-                            arguments = listOf(navArgument("username") { type = NavType.StringType })
+                            arguments = listOf(navArgument("username") {
+                                type = NavType.StringType
+                            })
                         ) { backStackEntry ->
                             PostRegistrationNotice(
-                                newUsername = backStackEntry.arguments?.getString("username") ?: "?",
+                                newUsername = backStackEntry.arguments?.getString("username")
+                                    ?: "?",
                                 onNoticeUnderstood = {
                                     repeat(2) { navController.popBackStack() }
                                 }
