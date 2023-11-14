@@ -13,4 +13,5 @@ object NetworkService {
 
     val authService: AuthenticationService = instance.create(AuthenticationService::class.java)
     val productsService: ProductsService = instance.create(ProductsService::class.java)
+    val storesService: StoresService = instance.create(StoresService::class.java)
 }
