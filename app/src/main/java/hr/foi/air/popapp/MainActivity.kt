@@ -15,11 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
-import hr.foi.air.popapp.navigation.components.CreateStorePage
-import hr.foi.air.popapp.navigation.components.EntryPage
-import hr.foi.air.popapp.navigation.components.HomePage
-import hr.foi.air.popapp.navigation.components.LoginPage
-import hr.foi.air.popapp.navigation.components.ProductsPage
+import hr.foi.air.popapp.navigation.components.*
 import hr.foi.air.popapp.navigation.components.registration.PostRegistrationNotice
 import hr.foi.air.popapp.navigation.components.registration.RegistrationPage
 import hr.foi.air.popapp.ui.theme.POPAppTheme
@@ -89,7 +85,9 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("select-store") {
-                            TODO()
+                            SelectStorePage(onStoreSelected = {
+                                navController.navigate("home")
+                            })
                         }
                         composable("create-store") {
                             CreateStorePage(onStoreCreated = {
