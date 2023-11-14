@@ -92,7 +92,9 @@ class MainActivity : ComponentActivity() {
                             TODO()
                         }
                         composable("create-store") {
-                            CreateStorePage({})
+                            CreateStorePage(onStoreCreated = {
+                                navController.navigate("home")
+                            })
                         }
                         composable("home") {
                             HomePage(onMenuOptionSelected = { selectedRoute ->
