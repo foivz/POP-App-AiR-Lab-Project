@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.utsman.osmandcompose.*
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.viewmodels.StoresViewModel
+import hr.foi.air.popapp.ws.models.responses.Store
 import org.osmdroid.util.GeoPoint
 
 @Composable
@@ -42,7 +43,7 @@ fun SelectStorePage(
 
         val stores by viewModel.stores.observeAsState()
         viewModel.fetchStores()
-        val storeMarkers = mutableListOf<MarkerState>()
+        val storeMarkers = mutableListOf<Pair<MarkerState, Store>>()
 
         stores?.let {
             for (store in it) {
@@ -52,7 +53,7 @@ fun SelectStorePage(
                             store.latitude!!,
                             store.longitude!!
                         )
-                    )
+                    ) to store
                 )
             }
         }
@@ -83,9 +84,12 @@ fun SelectStorePage(
                 isTilesScaledToDpi = true
             )
         ) {
-            storeMarkers.forEach { markerState ->
+            storeMarkers.forEach { (markerState, store) ->
                 Marker(
-                    state = markerState
+                    state = markerState,
+                    infoWindowContent = {
+                        Text(text = store.storeName!!)
+                    }
                 )
             }
         }
