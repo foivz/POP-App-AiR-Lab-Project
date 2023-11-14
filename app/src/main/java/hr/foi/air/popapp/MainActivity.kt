@@ -73,10 +73,25 @@ class MainActivity : ComponentActivity() {
                         composable("login") {
                             LoginPage(
                                 onSuccessfulLogin = {
-                                    navController.navigate("home")
+                                    val userData = Auth.loggedInUserData!!
+                                    if (userData.storeName != null) {
+                                        navController.navigate("home")
+                                    } else {
+                                        when (userData.role) {
+                                            "buyer" -> navController.navigate("select-store")
+                                            "seller" -> navController.navigate("create-store")
+                                            else -> navController.navigate("home")
+                                        }
+                                    }
                                 },
                                 loginHandler = currentLoginHandler
                             )
+                        }
+                        composable("select-store") {
+                            TODO()
+                        }
+                        composable("create-store") {
+                            TODO()
                         }
                         composable("home") {
                             HomePage(onMenuOptionSelected = { selectedRoute ->
