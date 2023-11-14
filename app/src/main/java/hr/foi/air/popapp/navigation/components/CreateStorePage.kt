@@ -1,20 +1,12 @@
 package hr.foi.air.popapp.navigation.components
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,12 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.utsman.osmandcompose.MapProperties
-import com.utsman.osmandcompose.Marker
-import com.utsman.osmandcompose.OpenStreetMap
-import com.utsman.osmandcompose.ZoomButtonVisibility
-import com.utsman.osmandcompose.rememberCameraState
-import com.utsman.osmandcompose.rememberMarkerState
+import com.utsman.osmandcompose.*
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
 import hr.foi.air.popapp.viewmodels.NewStoreViewModel
@@ -39,8 +26,8 @@ fun CreateStorePage(
     viewModel: NewStoreViewModel = viewModel(),
     onStoreCreated: () -> Unit
 ) {
-    val storeName by viewModel.storeName.observeAsState()
-    val errorMessage by viewModel.errorReason.observeAsState()
+    val storeName = viewModel.storeName.observeAsState().value ?: ""
+    val errorMessage = viewModel.errorReason.observeAsState().value ?: ""
 
     val storeLocationMarkerState = rememberMarkerState(
         geoPoint = GeoPoint(0.0, 0.0)
@@ -62,14 +49,16 @@ fun CreateStorePage(
             style = MaterialTheme.typography.h4,
         )
 
-        Text(
-            text = errorMessage!!,
-            color = Color.Red
-        )
+        if (errorMessage.isNotBlank()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red
+            )
+        }
 
         StyledTextField(
             label = "Your new store name",
-            value = storeName!!,
+            value = storeName,
             onValueChange = { viewModel.setStoreName(it) },
         )
 
@@ -102,16 +91,15 @@ fun CreateStorePage(
             Marker(
                 state = storeLocationMarkerState,
                 visible = isStoreSet,
-                infoWindowContent = {
-                    StyledButton(label = "Naziv trgovine", onClick = { /*TODO*/ })
-                },
             )
         }
 
         StyledButton(
             label = "Create store",
-            onClick = { viewModel.createStore(onSuccessfulResponse = onStoreCreated) },
-            enabled = isStoreSet && storeName!!.isNotBlank()
+            enabled = isStoreSet && storeName.isNotBlank(),
+            onClick = {
+                viewModel.createStore(onSuccessfulResponse = onStoreCreated)
+            }
         )
     }
 }
