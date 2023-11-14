@@ -28,7 +28,8 @@ class UsernamePasswordLoginHandler : LoginHandler {
         loginRequestHandler.sendRequest(
             object : ResponseListener {
                 override fun <LoggedInUserData> onSuccessfulResponse(response: SuccessfulResponseBody<LoggedInUserData>) {
-                    val loginUserData = response.data[0] as hr.foi.air.popapp.ws.models.LoggedInUserData
+                    val loginUserData =
+                        response.data[0] as hr.foi.air.popapp.ws.models.LoggedInUserData
 
                     loginListener.onSuccessfulLogin(
                         LoginUserData(

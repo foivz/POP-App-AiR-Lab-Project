@@ -94,7 +94,11 @@ fun CreateStorePage(onStoreCreated: (newStoreId: Int) -> Unit) {
             )
         }
 
-        StyledButton(label = "Create store", onClick = { /*TODO*/ })
+        StyledButton(
+            label = "Create store",
+            onClick = { /*TODO*/ },
+            enabled = isStoreSet && storeName.isNotBlank()
+        )
     }
 }
 

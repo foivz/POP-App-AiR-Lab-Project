@@ -8,5 +8,5 @@ import retrofit2.http.Header
 
 interface ProductsService {
     @GET("products")
-    fun getProducts(@Header("Authorization") authHeader: String): Call<SuccessfulResponseBody<Array<Product>>>
+    fun getProducts(@Header("Authorization") authHeader: String): Call<SuccessfulResponseBody<Product>>
 }
