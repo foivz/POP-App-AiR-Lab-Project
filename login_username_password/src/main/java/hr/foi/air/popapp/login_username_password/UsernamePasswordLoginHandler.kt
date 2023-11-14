@@ -7,6 +7,7 @@ import hr.foi.air.popapp.core.login.LoginUserData
 import hr.foi.air.popapp.core.login.network.ResponseListener
 import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
 import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
+import hr.foi.air.popapp.ws.models.LoggedInUserData
 import hr.foi.air.popapp.ws.models.LoginBody
 import hr.foi.air.popapp.ws.request_handlers.LoginRequestHandler
 
@@ -26,10 +27,9 @@ class UsernamePasswordLoginHandler : LoginHandler {
         val loginRequestHandler = LoginRequestHandler(LoginBody(username, password))
 
         loginRequestHandler.sendRequest(
-            object : ResponseListener {
-                override fun <LoggedInUserData> onSuccessfulResponse(response: SuccessfulResponseBody<LoggedInUserData>) {
-                    val loginUserData =
-                        response.data[0] as hr.foi.air.popapp.ws.models.LoggedInUserData
+            object : ResponseListener<LoggedInUserData> {
+                override fun onSuccessfulResponse(response: SuccessfulResponseBody<LoggedInUserData>) {
+                    val loginUserData = response.data[0]
 
                     loginListener.onSuccessfulLogin(
                         LoginUserData(

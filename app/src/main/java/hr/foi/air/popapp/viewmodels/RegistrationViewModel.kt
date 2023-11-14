@@ -7,6 +7,7 @@ import hr.foi.air.popapp.core.login.network.ResponseListener
 import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
 import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
 import hr.foi.air.popapp.ws.models.RegistrationBody
+import hr.foi.air.popapp.ws.models.responses.RegisteredUser
 import hr.foi.air.popapp.ws.request_handlers.RegistrationRequestHandler
 
 class RegistrationViewModel : ViewModel() {
@@ -33,8 +34,8 @@ class RegistrationViewModel : ViewModel() {
         )
         val registrationRequestHandler = RegistrationRequestHandler(requestBody)
 
-        registrationRequestHandler.sendRequest(object : ResponseListener {
-            override fun <T> onSuccessfulResponse(response: SuccessfulResponseBody<T>) {
+        registrationRequestHandler.sendRequest(object : ResponseListener<RegisteredUser> {
+            override fun onSuccessfulResponse(response: SuccessfulResponseBody<RegisteredUser>) {
                 onSuccess()
             }
 

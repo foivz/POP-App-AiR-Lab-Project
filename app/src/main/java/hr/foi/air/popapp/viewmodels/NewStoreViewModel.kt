@@ -8,6 +8,7 @@ import hr.foi.air.popapp.core.login.network.ResponseListener
 import hr.foi.air.popapp.core.login.network.models.ErrorResponseBody
 import hr.foi.air.popapp.core.login.network.models.SuccessfulResponseBody
 import hr.foi.air.popapp.ws.models.NewStoreBody
+import hr.foi.air.popapp.ws.models.responses.Store
 import hr.foi.air.popapp.ws.request_handlers.CreateStoreRequestHandler
 
 class NewStoreViewModel : ViewModel() {
@@ -34,8 +35,8 @@ class NewStoreViewModel : ViewModel() {
             NewStoreBody(storeName.value!!, _storeLatitude.value!!, _storeLongitude.value!!)
         )
         requestHandler.sendRequest(
-            object : ResponseListener {
-                override fun <T> onSuccessfulResponse(response: SuccessfulResponseBody<T>) {
+            object : ResponseListener<Store> {
+                override fun onSuccessfulResponse(response: SuccessfulResponseBody<Store>) {
                     onSuccessfulResponse()
                 }
 

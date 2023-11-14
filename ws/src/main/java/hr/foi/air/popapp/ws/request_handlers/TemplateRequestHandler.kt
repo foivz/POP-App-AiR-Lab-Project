@@ -9,8 +9,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-abstract class TemplateRequestHandler<T> : RequestHandler {
-    override fun sendRequest(responseListener: ResponseListener) {
+abstract class TemplateRequestHandler<T> : RequestHandler<T> {
+    override fun sendRequest(responseListener: ResponseListener<T>) {
         val serviceCall = getServiceCall()
 
         serviceCall.enqueue(object : Callback<SuccessfulResponseBody<T>> {
