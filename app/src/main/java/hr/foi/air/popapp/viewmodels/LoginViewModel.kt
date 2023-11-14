@@ -15,7 +15,12 @@ class LoginViewModel : ViewModel() {
     private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
     val errorMessage: LiveData<String> = _errorMessage
 
-    fun login(loginHandler: LoginHandler, loginToken: LoginToken, onSuccessfulLogin: () -> Unit) {
+    fun login(
+        loginHandler: LoginHandler,
+        loginToken: LoginToken,
+        onSuccessfulLogin: () -> Unit,
+        onFailedLogin: () -> Unit
+    ) {
         loginHandler.handleLogin(loginToken, object : LoginOutcomeListener {
             override fun onSuccessfulLogin(loginUserData: LoginUserData) {
                 Auth.loggedInUserData = loginUserData
@@ -24,6 +29,7 @@ class LoginViewModel : ViewModel() {
 
             override fun onFailedLogin(reason: String) {
                 _errorMessage.value = reason
+                onFailedLogin()
             }
         })
     }

@@ -24,15 +24,15 @@ fun RegistrationPage(
     viewModel: RegistrationViewModel = viewModel(),
     onSuccessfulRegistration: (newUsername: String) -> Unit
 ) {
-    val firstName = viewModel.firstName.observeAsState().value!!
-    val lastName = viewModel.lastName.observeAsState().value!!
-    val username = viewModel.username.observeAsState().value!!
-    val email = viewModel.email.observeAsState().value!!
-    val password = viewModel.password.observeAsState().value!!
-    val confirmPassword = viewModel.confirmPassword.observeAsState().value!!
-    var isAwaitingResponse by remember {
-        mutableStateOf(false)
-    }
+    val firstName = viewModel.firstName.observeAsState().value ?: ""
+    val lastName = viewModel.lastName.observeAsState().value ?: ""
+    val username = viewModel.username.observeAsState().value ?: ""
+    val email = viewModel.email.observeAsState().value ?: ""
+    val password = viewModel.password.observeAsState().value ?: ""
+    val confirmPassword = viewModel.confirmPassword.observeAsState().value ?: ""
+
+    var isAwaitingResponse by remember { mutableStateOf(false) }
+    val errorMessage = viewModel.errorMessage.observeAsState().value ?: ""
 
     Column(
         modifier = Modifier
@@ -43,12 +43,11 @@ fun RegistrationPage(
         Text(
             text = "Create an Account",
             style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        if (viewModel.errorMessage.value!!.isNotBlank()) {
+        if (errorMessage.isBlank()) {
             Text(
-                text = viewModel.errorMessage.value!!,
+                text = errorMessage,
                 color = Color.Red
             )
         }

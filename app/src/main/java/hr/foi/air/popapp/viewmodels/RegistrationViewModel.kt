@@ -1,5 +1,6 @@
 package hr.foi.air.popapp.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import hr.foi.air.popapp.core.login.network.ResponseListener
@@ -16,7 +17,9 @@ class RegistrationViewModel : ViewModel() {
     val password: MutableLiveData<String> = MutableLiveData("")
     val confirmPassword: MutableLiveData<String> = MutableLiveData("")
     val role: MutableLiveData<String> = MutableLiveData("buyer")
-    val errorMessage: MutableLiveData<String> = MutableLiveData("")
+
+    private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
+    val errorMessage: LiveData<String> = _errorMessage
 
 
     fun registerUser(onSuccess: () -> Unit, onFail: () -> Unit) {
@@ -36,8 +39,8 @@ class RegistrationViewModel : ViewModel() {
             }
 
             override fun onErrorResponse(response: ErrorResponseBody) {
-                errorMessage.value = response.message + " "
-                errorMessage.value += when (response.error_code) {
+                _errorMessage.value = response.message + " "
+                _errorMessage.value += when (response.error_code) {
                     101 -> "Check username."
                     102 -> "Username is already used. Please enter another one."
                     103 -> "Email is invalid."
@@ -52,7 +55,7 @@ class RegistrationViewModel : ViewModel() {
             }
 
             override fun onNetworkFailure(t: Throwable) {
-                errorMessage.value = "Network error occured, please try again later..."
+                _errorMessage.value = "Network error occured, please try again later..."
                 onFail()
             }
         })

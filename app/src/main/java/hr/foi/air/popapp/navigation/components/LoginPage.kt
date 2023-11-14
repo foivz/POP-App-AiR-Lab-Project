@@ -26,11 +26,11 @@ fun LoginPage(
     onSuccessfulLogin: () -> Unit,
     loginHandler: LoginHandler
 ) {
-    val username = viewModel.username.observeAsState().value!!
-    val password = viewModel.password.observeAsState().value!!
+    val username = viewModel.username.observeAsState().value ?: ""
+    val password = viewModel.password.observeAsState().value ?: ""
 
     var awaitingResponse by remember { mutableStateOf(false) }
-    val errorMessage = viewModel.errorMessage.observeAsState().value!!
+    val errorMessage = viewModel.errorMessage.observeAsState().value ?: ""
 
     Column(
         modifier = Modifier
@@ -74,7 +74,17 @@ fun LoginPage(
             onClick = {
                 val usernamePasswordToken = UsernamePasswordLoginToken(username, password)
                 awaitingResponse = true
-                viewModel.login(loginHandler, usernamePasswordToken, onSuccessfulLogin = onSuccessfulLogin)
+                viewModel.login(
+                    loginHandler,
+                    usernamePasswordToken,
+                    onSuccessfulLogin = {
+                        awaitingResponse = false
+                        onSuccessfulLogin()
+                    },
+                    onFailedLogin = {
+                        awaitingResponse = false
+                    }
+                )
             }
         )
     }
