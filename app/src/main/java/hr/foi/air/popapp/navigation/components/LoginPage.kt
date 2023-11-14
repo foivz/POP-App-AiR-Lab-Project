@@ -4,34 +4,33 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hr.foi.air.popapp.context.Auth
+import androidx.lifecycle.viewmodel.compose.viewModel
 import hr.foi.air.popapp.core.login.LoginHandler
-import hr.foi.air.popapp.core.login.LoginOutcomeListener
-import hr.foi.air.popapp.core.login.LoginUserData
 import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.popapp.login_username_password.UsernamePasswordLoginToken
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
+import hr.foi.air.popapp.viewmodels.LoginViewModel
 
 @Composable
 fun LoginPage(
+    viewModel: LoginViewModel = viewModel(),
     onSuccessfulLogin: () -> Unit,
     loginHandler: LoginHandler
 ) {
-    var username by remember { mutableStateOf("sbarry") }
-    var password by remember { mutableStateOf("test123") }
+    val username = viewModel.username.observeAsState().value!!
+    val password = viewModel.password.observeAsState().value!!
 
     var awaitingResponse by remember { mutableStateOf(false) }
-    var errorMessage by remember {
-        mutableStateOf("")
-    }
+    val errorMessage = viewModel.errorMessage.observeAsState().value!!
 
     Column(
         modifier = Modifier
@@ -40,7 +39,7 @@ fun LoginPage(
         verticalArrangement = Arrangement.Center
     ) {
 
-        if (errorMessage == "") {
+        if (errorMessage.isBlank()) {
             Text(
                 "With your POP-App account you can log in the application. " +
                         "Please note that the course teacher needs to approve your account before you can successfully log in."
@@ -56,11 +55,14 @@ fun LoginPage(
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        StyledTextField(label = "Username", value = username, onValueChange = { username = it })
+        StyledTextField(
+            label = "Username",
+            value = username,
+            onValueChange = { viewModel.username.value = it })
         PasswordTextField(
             label = "Password",
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { viewModel.password.value = it },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
         )
 
@@ -71,21 +73,8 @@ fun LoginPage(
             enabled = !awaitingResponse,
             onClick = {
                 val usernamePasswordToken = UsernamePasswordLoginToken(username, password)
-
                 awaitingResponse = true
-
-                loginHandler.handleLogin(usernamePasswordToken, object : LoginOutcomeListener {
-                    override fun onSuccessfulLogin(loginUserData: LoginUserData) {
-                        awaitingResponse = false
-                        Auth.loggedInUserData = loginUserData
-                        onSuccessfulLogin()
-                    }
-
-                    override fun onFailedLogin(reason: String) {
-                        awaitingResponse = false
-                        errorMessage = reason
-                    }
-                })
+                viewModel.login(loginHandler, usernamePasswordToken, onSuccessfulLogin = onSuccessfulLogin)
             }
         )
     }
@@ -94,5 +83,8 @@ fun LoginPage(
 @Preview
 @Composable
 fun LoginPagePreview() {
-    LoginPage({}, UsernamePasswordLoginHandler())
+    LoginPage(
+        onSuccessfulLogin = {},
+        loginHandler = UsernamePasswordLoginHandler()
+    )
 }
