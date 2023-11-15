@@ -39,7 +39,7 @@ class UsernamePasswordLoginHandler : LoginHandler {
                             lastName = loginUserData.lastName!!,
                             role = loginUserData.role!!,
                             isAccepted = loginUserData.isAccepted!!,
-                            storeId = loginUserData.store?.storeId,
+                            storeId = loginUserData.store?.id,
                             storeName = loginUserData.store?.name,
                             jwt = loginUserData.tokenPair!!.accessToken!!,
                             refreshToken = loginUserData.tokenPair!!.refreshToken.token!!,
