@@ -106,7 +106,10 @@ fun SelectStorePage(
         StyledButton(
             label = selectedStore?.name ?: "Select a store",
             enabled = selectedStore != null,
-            onClick = { }
+            onClick = {
+                // TODO: assign a store on backend
+                onStoreSelected()
+            }
         )
     }
 }
