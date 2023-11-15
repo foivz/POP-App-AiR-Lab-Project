@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.popapp.ui.theme.Shapes
 import hr.foi.air.popapp.ui.theme.Typography
@@ -16,7 +17,6 @@ import hr.foi.air.popapp.ws.models.responses.Product
 fun ProductCard(product: Product) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(16.dp),
         shape = Shapes.medium,
         backgroundColor = MaterialTheme.colors.background,
@@ -24,7 +24,6 @@ fun ProductCard(product: Product) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(16.dp)
         ) {
             Text(
@@ -60,4 +59,18 @@ fun ProductCard(product: Product) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun ProductCardPreview() {
+    ProductCard(
+        product = Product(
+            id = 0,
+            name = "Preview Product",
+            description = "Lorem ipsum dolor sit amet",
+            price = 10,
+            quantity = 2
+        )
+    )
 }
