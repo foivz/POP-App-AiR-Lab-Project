@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -30,9 +31,11 @@ fun RegistrationPage(
     val email = viewModel.email.observeAsState().value ?: ""
     val password = viewModel.password.observeAsState().value ?: ""
     val confirmPassword = viewModel.confirmPassword.observeAsState().value ?: ""
+    val role = viewModel.role.observeAsState().value ?: ""
 
     var isAwaitingResponse by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.observeAsState().value ?: ""
+    var roleDropdownExpanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -83,6 +86,23 @@ fun RegistrationPage(
             onValueChange = { viewModel.confirmPassword.value = it },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
         )
+
+        Text(
+            text = "Choose your starting role:",
+            style = MaterialTheme.typography.h6,
+        )
+        for (roleName in viewModel.possibleRoles) {
+            Row {
+                Checkbox(
+                    checked = role == roleName,
+                    onCheckedChange = { viewModel.role.value = roleName }
+                )
+                Text(
+                    text = roleName,
+                    modifier = Modifier.padding(top = 12.dp)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(50.dp))
 

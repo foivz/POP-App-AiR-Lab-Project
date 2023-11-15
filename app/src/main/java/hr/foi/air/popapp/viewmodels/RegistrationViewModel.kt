@@ -19,6 +19,8 @@ class RegistrationViewModel : ViewModel() {
     val confirmPassword: MutableLiveData<String> = MutableLiveData("")
     val role: MutableLiveData<String> = MutableLiveData("buyer")
 
+    val possibleRoles: List<String> = listOf("buyer", "seller")
+
     private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
     val errorMessage: LiveData<String> = _errorMessage
 
