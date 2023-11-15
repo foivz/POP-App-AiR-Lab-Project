@@ -40,7 +40,7 @@ class UsernamePasswordLoginHandler : LoginHandler {
                             role = loginUserData.role!!,
                             isAccepted = loginUserData.isAccepted!!,
                             storeId = loginUserData.store?.storeId,
-                            storeName = loginUserData.store?.storeName,
+                            storeName = loginUserData.store?.name,
                             jwt = loginUserData.tokenPair!!.accessToken!!,
                             refreshToken = loginUserData.tokenPair!!.refreshToken.token!!,
                         )
