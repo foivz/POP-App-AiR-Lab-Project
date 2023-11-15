@@ -11,11 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.utsman.osmandcompose.*
+import hr.foi.air.popapp.R
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.viewmodels.StoresViewModel
 import hr.foi.air.popapp.ws.models.responses.Store
@@ -90,7 +93,11 @@ fun SelectStorePage(
                     onClick = {
                         selectedStore = store
                         true
-                    }
+                    },
+                    icon = LocalContext.current.resources.getDrawable(
+                        R.drawable.baseline_storefront_24,
+                        null
+                    )
                 )
             }
         }
