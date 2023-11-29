@@ -19,26 +19,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.ads.AdSize
+import hr.foi.air.popapp.ads.AdmobBanner
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 import hr.foi.air.popapp.ui.theme.Typography
-import java.util.*
+import java.util.Locale
 
-val menuItemsAll = listOf(
+val menuItemsAll: MutableList<Any> = mutableListOf(
     "Balance" to Icons.Default.Star,
     "Invoices" to Icons.Default.List
 )
-val menuItemsBuyer = listOf(
+val menuItemsBuyer: MutableList<Any> = mutableListOf(
     "Buy" to Icons.Default.ShoppingCart,
 )
-val menuItemsSeller = listOf(
+val menuItemsSeller: MutableList<Any> = mutableListOf(
     "Products" to Icons.Default.ShoppingCart,
 )
 
 @Composable
 fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
-
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Text(
             text = "Welcome, ${Auth.loggedInUserData?.firstName ?: "[Unknown name]"}",
@@ -53,25 +54,35 @@ fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-            items(getMenuItemsListBasedOnRole()) { (text, icon) ->
-                MenuItem(text, icon) {
-                    onMenuOptionSelected(text.lowercase(Locale.getDefault()))
-                }
-            }
 
-            items(menuItemsAll) { (text, icon) ->
-                MenuItem(text, icon) { onMenuOptionSelected(text.lowercase(Locale.getDefault())) }
+            val menuItemsList = getMenuItemsListBasedOnRole()
+
+            items(menuItemsList) { listElement ->
+                if (listElement is Pair<*, *>) {
+                    val (text, icon) = listElement as Pair<String, ImageVector>
+                    MenuItem(text, icon) {
+                        onMenuOptionSelected(text.lowercase(Locale.getDefault()))
+                    }
+                } else if (listElement is String && listElement == "show commerical") {
+                    AdmobBanner(adSize = AdSize.LARGE_BANNER, modifier = Modifier.fillMaxSize())
+                }
             }
         }
     }
 }
 
-private fun getMenuItemsListBasedOnRole(): List<Pair<String, ImageVector>> {
-    return when (Auth.loggedInUserData!!.role) {
+private fun getMenuItemsListBasedOnRole(): MutableList<Any> {
+    val menuItems = when (Auth.loggedInUserData!!.role) {
         "buyer" -> menuItemsBuyer
         "seller" -> menuItemsSeller
-        else -> listOf()
+        else -> mutableListOf()
     }
+
+
+    menuItemsAll.add("show commerical")
+    menuItemsAll.add("show commerical")
+
+    return menuItemsAll
 }
 
 @Preview
