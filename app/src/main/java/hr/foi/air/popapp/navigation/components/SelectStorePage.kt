@@ -107,7 +107,7 @@ fun SelectStorePage(
             label = selectedStore?.name ?: "Select a store",
             enabled = selectedStore != null,
             onClick = {
-                // TODO: assign a store on backend
+                viewModel.assignStore()
                 onStoreSelected()
             }
         )
