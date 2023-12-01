@@ -112,6 +112,8 @@ fun EntryPage(
             ) {
                 Text("Register", color = Color.White)
             }
+
+            AdMobBanner(unitId = "ca-app-pub-3940256099942544/6300978111")
         }
     }
 }
