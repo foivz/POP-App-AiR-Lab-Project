@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import hr.foi.air.popapp.ui.components.AdMobBanner
 import hr.foi.air.popapp.ui.components.ProductCard
 import hr.foi.air.popapp.viewmodels.ProductsViewModel
 import hr.foi.air.popapp.ws.models.responses.Product
@@ -27,6 +28,7 @@ fun ProductsPage(viewModel: ProductsViewModel = viewModel()) {
         LazyColumn {
             items(products as List<Product>) {
                 ProductCard(product = it)
+                AdMobBanner(unitId = "ca-app-pub-3940256099942544/6300978111")
             }
         }
     }
