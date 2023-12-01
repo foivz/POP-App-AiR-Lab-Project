@@ -1,8 +1,9 @@
 package hr.foi.air.popapp.navigation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,10 +26,11 @@ fun ProductsPage(viewModel: ProductsViewModel = viewModel()) {
             modifier = Modifier.fillMaxSize()
         )
     } else {
-        LazyColumn {
-            items(products as List<Product>) {
-                ProductCard(product = it)
-                AdMobBanner(unitId = "ca-app-pub-3940256099942544/6300978111")
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            (products as List<Product>).withIndex().map { (index, product) ->
+                ProductCard(product = product)
+                if (index != 0 && (index % 3 == 0 || index % 5 == 0))
+                    AdMobBanner(unitId = "ca-app-pub-3940256099942544/6300978111")
             }
         }
     }
