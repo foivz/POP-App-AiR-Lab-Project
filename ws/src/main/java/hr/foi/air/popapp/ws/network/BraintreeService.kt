@@ -9,7 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface BraintreeService {
-    @POST("braintree")
+    @POST("braintree/client-token")
     fun createTransaction(
         @Header("Authorization") authHeader: String,
         @Body body: NewTransactionBody
