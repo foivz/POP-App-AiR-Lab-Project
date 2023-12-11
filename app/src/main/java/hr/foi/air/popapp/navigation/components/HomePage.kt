@@ -1,32 +1,39 @@
 package hr.foi.air.popapp.navigation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
-import hr.foi.air.popapp.ui.theme.Typography
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 val menuItemsAll = listOf(
@@ -42,38 +49,61 @@ val menuItemsSeller = listOf(
 
 @Composable
 fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
-    Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier.background(MaterialTheme.colors.primaryVariant),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
 
-                }) {
-                    Text(text = "Purchase a different app theme")
+    ModalDrawer(drawerState = drawerState, drawerContent = {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 50.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+                onClick = {
+
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primary,
+                    modifier = Modifier.size(48.dp)
+                )
+                Text(text = "Buy a new app theme")
             }
         }
-    ) {
-
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .padding(it)
+    }) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text("Welcome, ${Auth.loggedInUserData?.firstName ?: "[Unknown name]"}")
+                    },
+                    navigationIcon = {
+                        Button(onClick = {
+                            coroutineScope.launch {
+                                when (drawerState.currentValue) {
+                                    DrawerValue.Open -> drawerState.close()
+                                    DrawerValue.Closed -> drawerState.open()
+                                }
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                )
+            }
         ) {
-            Text(
-                text = "Welcome, ${Auth.loggedInUserData?.firstName ?: "[Unknown name]"}",
-                style = Typography.h4,
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.primaryVariant,
-                textAlign = TextAlign.Center
-            )
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp)
+                    .background(MaterialTheme.colors.background)
+                    .padding(it)
             ) {
                 items(getMenuItemsListBasedOnRole()) { (text, icon) ->
                     MenuItem(text, icon) {
