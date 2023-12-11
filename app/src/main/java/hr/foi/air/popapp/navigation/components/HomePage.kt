@@ -1,5 +1,7 @@
 package hr.foi.air.popapp.navigation.components
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +30,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClient.BillingResponseCode
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PurchasesUpdatedListener
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
@@ -47,8 +55,39 @@ val menuItemsSeller = listOf(
     "Products" to Icons.Default.ShoppingCart,
 )
 
+private val purchasesUpdatedListener =
+    PurchasesUpdatedListener { billingResult, purchases ->
+        // To be implemented in a later section.
+    }
+
+private lateinit var billingClient: BillingClient
+
 @Composable
 fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
+    val context = LocalContext.current
+    billingClient = BillingClient.newBuilder(context)
+        .setListener(purchasesUpdatedListener)
+        .enablePendingPurchases()
+        .build()
+
+    billingClient.startConnection(object : BillingClientStateListener {
+
+        override fun onBillingSetupFinished(billingResult: BillingResult) {
+            if (billingResult.responseCode == BillingResponseCode.OK) {
+                Log.i("POPAPP_BILLING", "Google Billing - Successful: $billingResult")
+            } else {
+                Log.i(
+                    "POPAPP_BILLING",
+                    "An error occured when setting up billing: ${billingResult.debugMessage}"
+                )
+            }
+        }
+
+        override fun onBillingServiceDisconnected() {
+            Toast.makeText(context, "Disconnected from Google Billing", Toast.LENGTH_LONG).show()
+        }
+    })
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
