@@ -38,10 +38,14 @@ import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.queryProductDetails
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 val menuItemsAll = listOf(
@@ -101,6 +105,26 @@ fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
             Button(
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                 onClick = {
+                    val productList = listOf(
+                        QueryProductDetailsParams.Product.newBuilder()
+                            .setProductId("red_theme")
+                            .setProductType(BillingClient.ProductType.INAPP)
+                            .build(),
+                        QueryProductDetailsParams.Product.newBuilder()
+                            .setProductId("blue_theme")
+                            .setProductType(BillingClient.ProductType.INAPP)
+                            .build()
+                    )
+                    val params = QueryProductDetailsParams.newBuilder()
+                    params.setProductList(productList)
+
+                    coroutineScope.launch {
+                        val productDetailsResult = withContext(Dispatchers.IO) {
+                            billingClient.queryProductDetails(params.build())
+                        }
+
+                        Log.i("POPAPP_BILLING", productDetailsResult.productDetailsList.toString())
+                    }
 
                 }
             ) {
