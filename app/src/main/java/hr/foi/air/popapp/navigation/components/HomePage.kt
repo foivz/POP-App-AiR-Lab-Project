@@ -1,5 +1,6 @@
 package hr.foi.air.popapp.navigation.components
 
+import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -36,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.queryProductDetails
@@ -67,8 +70,16 @@ private val purchasesUpdatedListener =
 private lateinit var billingClient: BillingClient
 
 @Composable
-fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
+fun HomePage(
+    onMenuOptionSelected: (optionName: String) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    var queryProductDetailsParams: QueryProductDetailsParams? = null
+    var queriedProductDetails: List<ProductDetails>? = null
+
     val context = LocalContext.current
+
     billingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
         .enablePendingPurchases()
@@ -76,9 +87,33 @@ fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
 
     billingClient.startConnection(object : BillingClientStateListener {
 
+
         override fun onBillingSetupFinished(billingResult: BillingResult) {
             if (billingResult.responseCode == BillingResponseCode.OK) {
                 Log.i("POPAPP_BILLING", "Google Billing - Successful: $billingResult")
+
+                val productList = listOf(
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId("red_theme")
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build(),
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId("blue_theme")
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build()
+                )
+                queryProductDetailsParams = QueryProductDetailsParams.newBuilder().apply {
+                    setProductList(productList)
+                }.build()
+
+                coroutineScope.launch {
+                    val productDetailsResult = withContext(Dispatchers.IO) {
+                        billingClient.queryProductDetails(queryProductDetailsParams!!)
+                    }
+
+                    queriedProductDetails = productDetailsResult.productDetailsList
+                }
+
             } else {
                 Log.i(
                     "POPAPP_BILLING",
@@ -92,8 +127,6 @@ fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
         }
     })
 
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
 
     ModalDrawer(drawerState = drawerState, drawerContent = {
         Box(
@@ -105,27 +138,21 @@ fun HomePage(onMenuOptionSelected: (optionName: String) -> Unit) {
             Button(
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                 onClick = {
-                    val productList = listOf(
-                        QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId("red_theme")
-                            .setProductType(BillingClient.ProductType.INAPP)
-                            .build(),
-                        QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId("blue_theme")
-                            .setProductType(BillingClient.ProductType.INAPP)
+                    val productDetailsParamsList = queriedProductDetails!!.map {
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(it)
                             .build()
-                    )
-                    val params = QueryProductDetailsParams.newBuilder()
-                    params.setProductList(productList)
-
-                    coroutineScope.launch {
-                        val productDetailsResult = withContext(Dispatchers.IO) {
-                            billingClient.queryProductDetails(params.build())
-                        }
-
-                        Log.i("POPAPP_BILLING", productDetailsResult.productDetailsList.toString())
                     }
 
+                    val billingFlowParams = BillingFlowParams.newBuilder()
+                        .setProductDetailsParamsList(productDetailsParamsList)
+                        .build()
+
+
+                    val billingResult =
+                        billingClient.launchBillingFlow(context as Activity, billingFlowParams)
+
+                    Log.i("BILLING_RESULT", billingResult.responseCode.toString())
                 }
             ) {
                 Icon(
