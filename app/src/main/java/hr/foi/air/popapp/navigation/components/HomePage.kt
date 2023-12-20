@@ -1,8 +1,5 @@
 package hr.foi.air.popapp.navigation.components
 
-import android.app.Activity
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,21 +31,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClient.BillingResponseCode
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.ProductDetails
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.QueryProductDetailsParams
-import com.android.billingclient.api.queryProductDetails
 import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.MenuItem
 import hr.foi.air.popapp.ui.theme.POPAppTheme
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Locale
 
 val menuItemsAll = listOf(
@@ -62,70 +48,14 @@ val menuItemsSeller = listOf(
     "Products" to Icons.Default.ShoppingCart,
 )
 
-private val purchasesUpdatedListener =
-    PurchasesUpdatedListener { billingResult, purchases ->
-        // To be implemented in a later section.
-    }
-
-private lateinit var billingClient: BillingClient
-
 @Composable
 fun HomePage(
     onMenuOptionSelected: (optionName: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    var queryProductDetailsParams: QueryProductDetailsParams? = null
-    var queriedProductDetails: List<ProductDetails>? = null
 
     val context = LocalContext.current
-
-    billingClient = BillingClient.newBuilder(context)
-        .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases()
-        .build()
-
-    billingClient.startConnection(object : BillingClientStateListener {
-
-
-        override fun onBillingSetupFinished(billingResult: BillingResult) {
-            if (billingResult.responseCode == BillingResponseCode.OK) {
-                Log.i("POPAPP_BILLING", "Google Billing - Successful: $billingResult")
-
-                val productList = listOf(
-                    QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId("red_theme")
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build(),
-                    QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId("blue_theme")
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build()
-                )
-                queryProductDetailsParams = QueryProductDetailsParams.newBuilder().apply {
-                    setProductList(productList)
-                }.build()
-
-                coroutineScope.launch {
-                    val productDetailsResult = withContext(Dispatchers.IO) {
-                        billingClient.queryProductDetails(queryProductDetailsParams!!)
-                    }
-
-                    queriedProductDetails = productDetailsResult.productDetailsList
-                }
-
-            } else {
-                Log.i(
-                    "POPAPP_BILLING",
-                    "An error occured when setting up billing: ${billingResult.debugMessage}"
-                )
-            }
-        }
-
-        override fun onBillingServiceDisconnected() {
-            Toast.makeText(context, "Disconnected from Google Billing", Toast.LENGTH_LONG).show()
-        }
-    })
 
 
     ModalDrawer(drawerState = drawerState, drawerContent = {
@@ -137,23 +67,7 @@ fun HomePage(
         ) {
             Button(
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
-                onClick = {
-                    val productDetailsParamsList = queriedProductDetails!!.map {
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                            .setProductDetails(it)
-                            .build()
-                    }
-
-                    val billingFlowParams = BillingFlowParams.newBuilder()
-                        .setProductDetailsParamsList(productDetailsParamsList)
-                        .build()
-
-
-                    val billingResult =
-                        billingClient.launchBillingFlow(context as Activity, billingFlowParams)
-
-                    Log.i("BILLING_RESULT", billingResult.responseCode.toString())
-                }
+                onClick = { }
             ) {
                 Icon(
                     imageVector = Icons.Default.Build,

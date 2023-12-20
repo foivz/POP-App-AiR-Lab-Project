@@ -1,7 +1,5 @@
 package hr.foi.air.popapp.ui.components
 
-import android.content.Intent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,34 +13,24 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import hr.foi.air.popapp.PaymentActivity
 import hr.foi.air.popapp.ui.theme.Shapes
 import hr.foi.air.popapp.ui.theme.Typography
 import hr.foi.air.popapp.ws.models.responses.Product
 
 @Composable
 fun ProductCard(product: Product) {
-    val context = LocalContext.current
-    val intent = Intent(context, PaymentActivity::class.java)
-    val decimalPrice: Double = product.price!!.div(100.0)
+    val formattedPrice: String = String.format("%.2f", product.price?.div(100.0) ?: 0.0)
+
     Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable {
-                intent.putExtra("price", decimalPrice)
-                context.startActivity(intent)
-            },
+        modifier = Modifier.padding(16.dp),
         shape = Shapes.medium,
         backgroundColor = MaterialTheme.colors.background,
         elevation = 4.dp
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = "Product ID: ${product.id}",
@@ -66,7 +54,7 @@ fun ProductCard(product: Product) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Price: $$decimalPrice",
+                    text = "Price: $formattedPrice",
                     style = Typography.h6,
                     color = MaterialTheme.colors.primary
                 )
