@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.popapp.R
-import hr.foi.air.popapp.ads.AdmobBanner
+import hr.foi.air.popapp.ui.components.AdMobBanner
 import hr.foi.air.popapp.ui.theme.Shapes
 
 @Composable
@@ -113,7 +113,7 @@ fun EntryPage(
                 Text("Register", color = Color.White)
             }
 
-            AdmobBanner(modifier = Modifier.fillMaxWidth())
+            AdMobBanner(unitId = "ca-app-pub-3940256099942544/6300978111")
         }
     }
 }
